@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Blog</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/style.css}"/>
+    <!-- Include Quill styles -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <style>
+        .navbar {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px;
+            display: inline-block;
+        }
+        .navbar a:hover {
+            background-color: #575757;
+        }
+        .container {
+            width: 50%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .ql-editor {
+            height: 200px; /* Set the height of the editor */
+            margin-bottom: 20px;
+        }
+        .action-btn {
+            padding: 10px 20px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .action-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <a href="/" th:href="@{/blogs}">Blogs</a>
+        <a href="/blogs/create" th:href="@{/blogs/create}">Write Blog</a>
+        <a href="/admin/blogs" th:href="@{/admin/blogs}">Edit Blogs</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Edit Blog</h1>
+        <form th:action="@{/admin/blogs/update/{id}(id=${blog.id})}" method="post">
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" th:value="${blog.title}" required/>
+
+            <label for="imagePath">Image Path</label>
+            <input type="text" id="imagePath" name="imagePath" th:value="${blog.imagePath}" required/>
+
+            <label for="description">Description</label>
+            <div id="editor" th:text="${blog.description}"></div>
+            <input type="hidden" id="description" name="description" th:value="${blog.description}">
+
+            <button type="submit" class="action-btn">Update Blog</button>
+        </form>
+    </div>
+
+    <!-- Include Quill library -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script>
+        var quill = new Quill('#editor', {
+            theme: 'snow'
+        });
+
+        // Set the initial content of the editor
+        quill.root.innerHTML = document.getElementById('description').value;
+
+        // Update the hidden input before submitting the form
+        document.querySelector('form').onsubmit = function() {
+            document.getElementById('description').value = quill.root.innerHTML;
+        };
+    </script>
+</body>
+</html>
